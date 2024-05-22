@@ -1,0 +1,84 @@
+﻿@model IEnumerable<PostModel>
+
+@{
+    ViewData["Title"] = "Posts";
+}
+
+<h1>@ViewData["Title"]</h1>
+<form method="get" asp-action="Index">
+    <div class="form-group">
+        <input  type="text" name="searchString" class="form-control" placeholder="Search posts by a keyword" value="@ViewData["searchString"]" />
+    </div>
+    <button type="submit" class="btn btn-primary">Search</button>
+</form>
+@if (!string.IsNullOrEmpty(ViewData["searchString"] as string))
+{
+    <p>Showing @ViewData["ResultCount"] results for "@ViewData["searchString"]"</p>
+}
+
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+ <div class="row">
+        @foreach (var post in Model)
+        {
+            <div class="col-md-4">
+                <div class="card mb-4 shadow-sm">
+                    @if (!string.IsNullOrEmpty(post.ImageURL))
+                    {
+                        <img height="200" src="@post.ImageURL" class="card-img-top" alt="Post Image" />
+                    }
+                    <div class="card-body">
+                        <h5 class="card-title">@post.Name</h5>
+                        <p class="card-text"><small class="text-muted">Published on @post.PublishDate?.ToString("MMMM dd, yyyy")</small></p>
+                        <p class="card-text"><small class="text-muted">Location: @post.Location</small></p>
+                    <p class="card-text"><small class="text-muted">Rating: @GetStarRating(post.Rating)</small></p>
+                    @if (post.Categories != null && post.Categories.Any())
+                    {
+                        <p class="card-text">
+                            <small class="text-muted">
+                                Categories:
+                                @foreach (var category in post.Categories)
+                                {
+                                    <span>@category.Name </span>
+
+                                    @(category != post.Categories.Last() ? ", " : "")
+                                }
+                            </small>
+                        </p>
+                        <p class="card-text">
+                            <small class="text-muted">
+                                Tags:
+                                @foreach (var tag in post.Tags)
+                                {
+                                    <a asp-action="Details" asp-controller="Tags" asp-route-id="@tag.Id" >#@tag.Name</a>
+
+                                    @(tag != post.Tags.Last() ? ", " : "")
+                                 
+                                }
+                            </small>
+                        </p>
+                    }
+                        <a asp-action="Details" asp-controller="Posts" asp-route-id="@post.Id" class="btn btn-primary">View Details</a>
+                    <a asp-action="Edit" asp-controller="Posts" asp-route-id="@post.Id" class="btn btn-primary">Edit</a>
+                    <a asp-action="Delete" asp-controller="Posts" asp-route-id="@post.Id" class="btn btn-primary">Delete</a>
+                </div>
+                </div>
+            </div>
+        }
+    </div>
+@functions
+{
+    public string GetStarRating(int rating)
+    {
+        string stars = "";
+        for (int i = 0; i < rating; i++)
+        {
+            stars += "★"; // Unicode character for star
+        }
+        return stars;
+    }
+}
+
+

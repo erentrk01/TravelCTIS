@@ -1,0 +1,15 @@
+﻿@using MVC.Settings
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    @if (User.Identity.IsAuthenticated)
+    {
+        <h1 class="display-4">Welcome to @AppSettings.Title <b>@User.Identity.Name</b>👋</h1>
+    }
+    else
+    {
+        <h1 class="display-4">Welcome to @AppSettings.Title</h1>
+    }
+</div>

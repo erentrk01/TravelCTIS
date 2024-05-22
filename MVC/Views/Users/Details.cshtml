@@ -1,0 +1,96 @@
+﻿@model Business.Models.UserModel
+
+@{
+    ViewData["Title"] = "User Details";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+@if (TempData["Message"] is not null)
+{
+    <p class="bg-warning text-black">@TempData["Message"]</p>
+}
+
+<div>
+    <h4>User Details</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.UserName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.UserName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.IsActiveOutput)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.IsActiveOutput)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Experience)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Experience)🚀
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.RoleOutput.Name)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.RoleOutput.Name)👔
+        </dd>
+    </dl>
+</div>
+
+<div>
+    @if (User.IsInRole("author"))
+    {
+        <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a>
+        @:&nbsp;|&nbsp;
+    }
+    <a asp-action="Index">Back to List</a>
+</div>
+
+<hr />
+
+<h4><b>@Model.UserName</b>`s Posts 🌴</h4>
+
+@if (Model.PostsOutput != null)
+{
+    <div class="row">
+        @foreach (var post in Model.PostsOutput)
+        {
+            <div class="col-md-4">
+                <div class="card mb-4 shadow-sm">
+                    @if (!string.IsNullOrEmpty(post.ImageURL))
+                    {
+                        <img height="200" src="@post.ImageURL" class="card-img-top" alt="Post Image" />
+                    }
+                    <div class="card-body">
+                        <h5 class="card-title">@post.Name</h5>
+                        <p class="card-text"><small class="text-muted">Published on @post.PublishDate?.ToString("MMMM dd, yyyy")</small></p>
+                        <p class="card-text"><small class="text-muted">Location: @post.Location</small></p>
+                        <p class="card-text"><small class="text-muted">Rating: @GetStarRating(post.Rating)</small></p>
+                        <a asp-action="Details" asp-controller="Posts" asp-route-id="@post.Id" class="btn btn-primary">View Details</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <p>No posts available for this user.</p>
+}
+@functions
+{
+    public string GetStarRating(int rating)
+    {
+        string stars = "";
+        for (int i = 0; i < rating; i++)
+        {
+            stars += "★"; // Unicode character for star
+        }
+        return stars;
+    }
+}
